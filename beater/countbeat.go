@@ -51,12 +51,21 @@ func (bt *Countbeat) Run(b *beat.Beat) error {
 		case <-ticker.C:
 		}
 
+		//event := beat.Event{
+		//	Timestamp: time.Now(),
+		//	Fields: common.MapStr{
+		//		"type":    b.Info.Name,
+		//		"counter": counter,
+		//	},
+		//}
+		fields := common.MapStr{
+			"@timestamp": common.Time(time.Now()),
+			"type":       b.Info.Name,
+			"counter":    counter,
+		}
 		event := beat.Event{
-			Timestamp: time.Now(),
-			Fields: common.MapStr{
-				"type":    b.Info.Name,
-				"counter": counter,
-			},
+			Timestamp: time.Time{},
+			Fields:    fields,
 		}
 		bt.client.Publish(event)
 		logp.Info("Event sent")
